@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 prueba22222
 hol buenos dias
+=======
+prueba
+hola buenos dias
+>>>>>>> 09ef076c38ee141122f8a438cc2f39ea469947bc
