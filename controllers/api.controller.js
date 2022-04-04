@@ -8,7 +8,7 @@ const api = {}
 //register
 
 
-api.apiRegisterUser = async(req, res)=>{
+api.registerUser = async(req, res)=>{
 	try {
 		const username = req.body.username;
 		if (!(await userService.checkUser(username))) {
@@ -30,7 +30,7 @@ api.apiRegisterUser = async(req, res)=>{
 
 //login
 
-api.apiLogin = async(req, res)=>{
+api.login = async(req, res)=>{
 	try {
 		const username = req.body.username;
 		if (await userService.checkUser(username)){
@@ -50,7 +50,7 @@ api.apiLogin = async(req, res)=>{
 
 
 
-api.apiDeleteUser = async(req, res)=>{
+api.deleteUser = async(req, res)=>{
 	const username = req.body.username
 	if (await userService.checkUser(username)){
 		userService.deleteUser(username)

@@ -47,8 +47,9 @@ static async registerUser(username, passwd, email) {
 			console.log(err);
 		}
 	}
-	static deleteUser(username){
-		pool.query("DELETE FROM Usuario where nombre = ($1)", [username]);
+	static async deleteUser(username){
+		const res = await pool.query("DELETE FROM Usuario where nombre = ($1)", [username]);
+		console.log(res.rows[0]);
 	}
 }
 
