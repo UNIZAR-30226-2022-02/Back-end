@@ -6,6 +6,6 @@ router.post("/register", api.apiRegisterUser);
 
 router.get("/login", api.apiLogin);
 
-router.get("/login/delete", api.apiDeleteUser);
+router.post("/login/delete", api.apiDeleteUser);
 
 module.exports = router
