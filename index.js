@@ -1,9 +1,12 @@
 const express = require("express");
 const bodyparser = require("body-parser");
 const app = express();
+require("dotenv").config();
 
-app.listen(3000, function () {
-    console.log("Servidor escuchando en el puerto 3000.");
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT, function () {
+    console.log(`Servidor escuchando en el puerto ${PORT}.`);
 });
 
 //app.use(bodyparser.urlencoded({extended:false}))
