@@ -31,7 +31,7 @@ api.registerUser = async(req, res)=>{
 //login
 
 api.login = async(req, res)=>{
-	try {
+	try {		
 		const username = req.body.username;
 		if (await userService.checkUser(username)){
 			const passwd = req.body.passwd;
