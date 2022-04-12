@@ -1,4 +1,4 @@
-const userService = require("./usuariosService.controller");
+const userController = require("./usuariosController");
 
 
 
@@ -11,11 +11,11 @@ const api = {}
 api.registerUser = async(req, res)=>{
 	try {
 		const username = req.body.username;
-		if (!(await userService.checkUser(username))) {
+		if (!(await userController.checkUser(username))) {
 			const passwd = req.body.passwd;
 			const puntos = req.body.puntos;
 			const email = req.body.email;
-			if (await userService.registerUser(username, passwd, email)){
+			if (await userController.registerUser(username, passwd, email)){
 				res.send("Usuario registrado.");
 			}
 		}
@@ -33,9 +33,9 @@ api.registerUser = async(req, res)=>{
 api.login = async(req, res)=>{
 	try {		
 		const username = req.body.username;
-		if (await userService.checkUser(username)){
+		if (await userController.checkUser(username)){
 			const passwd = req.body.passwd;
-			if (await userService.login(username, passwd))
+			if (await userController.login(username, passwd))
 				res.send("Usuario logeado.");
 			else
 				res.send("Usuario o contraseña incorrecta.");
@@ -52,7 +52,7 @@ api.login = async(req, res)=>{
 
 api.deleteUser = async(req, res)=>{
 	const username = req.body.username
-	if (await userService.checkUser(username)){
+	if (await userController.checkUser(username)){
 		userService.deleteUser(username)
 		res.send("Usuario eliminado.")
 	}
