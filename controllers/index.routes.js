@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const api = require("../api/api")
+const api = require("api")
 
 router.post("/register", api.registerUser);
 

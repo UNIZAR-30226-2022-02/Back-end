@@ -1,4 +1,4 @@
-const userController = require("../controllers/usuariosController");
+const userDAO = require("../DAO/usuarioDAO");
 
 
 
@@ -11,11 +11,11 @@ const api = {}
 api.registerUser = async(req, res)=>{
 	try {
 		const username = req.body.username;
-		if (!(await userController.checkUser(username))) {
+		if (!(await userDAO.checkUser(username))) {
 			const passwd = req.body.passwd;
 			const puntos = req.body.puntos;
 			const email = req.body.email;
-			if (await userController.registerUser(username, passwd, email)){
+			if (await userDAO.registerUser(username, passwd, email)){
 				res.send("Usuario registrado.");
 			}
 		}
@@ -31,11 +31,11 @@ api.registerUser = async(req, res)=>{
 //login
 
 api.login = async(req, res)=>{
-	try {		
+	try {
 		const username = req.body.username;
-		if (await userController.checkUser(username)){
+		if (await userDAO.checkUser(username)){
 			const passwd = req.body.passwd;
-			if (await userController.login(username, passwd))
+			if (await userDAO.login(username, passwd))
 				res.send("Usuario logeado.");
 			else
 				res.send("Usuario o contraseña incorrecta.");
@@ -52,7 +52,7 @@ api.login = async(req, res)=>{
 
 api.deleteUser = async(req, res)=>{
 	const username = req.body.username
-	if (await userController.checkUser(username)){
+	if (await userDAO.checkUser(username)){
 		userService.deleteUser(username)
 		res.send("Usuario eliminado.")
 	}
