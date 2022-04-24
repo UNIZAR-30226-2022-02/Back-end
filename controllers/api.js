@@ -35,15 +35,18 @@ api.login = async(req, res)=>{
 		if (await userDAO.checkUser(username)){
 			const passwd = req.body.password;
 			if (await userDAO.login(username, password))
-				res.send("Usuario logeado.");
+				res.status(200).send("OK");
 			else
-				res.send("Usuario o contraseña incorrecta.");
+				res.status(200).send('Usuario o contraseña incorrecta');
+				//res.send("Usuario o contraseña incorrecta.");
 		}
 		else
-			res.send("Usuario o contraseña incorrecta.");
+			res.status(200).send('Usuario o contraseña incorrecta');
+			//res.send("Usuario o contraseña incorrecta.");
 	} catch(err){
 		console.log(err);
-		res.send("Fallo en el login.");
+		res.sendStatus(500);
+		//res.send("Fallo en el login.");
 	}
 }
 
