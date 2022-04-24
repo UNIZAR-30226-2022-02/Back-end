@@ -12,10 +12,9 @@ api.registerUser = async(req, res)=>{
 	try {
 		const username = req.body.username;
 		if (!(await userDAO.checkUser(username))) {
-			const passwd = req.body.passwd;
-			const puntos = req.body.puntos;
+			const password = req.body.password;			
 			const email = req.body.email;
-			if (await userDAO.registerUser(username, passwd, email)){
+			if (await userDAO.registerUser(username, password, email)){
 				res.send("Usuario registrado.");
 			}
 		}
@@ -34,8 +33,8 @@ api.login = async(req, res)=>{
 	try {
 		const username = req.body.username;
 		if (await userDAO.checkUser(username)){
-			const passwd = req.body.passwd;
-			if (await userDAO.login(username, passwd))
+			const passwd = req.body.password;
+			if (await userDAO.login(username, password))
 				res.send("Usuario logeado.");
 			else
 				res.send("Usuario o contraseña incorrecta.");

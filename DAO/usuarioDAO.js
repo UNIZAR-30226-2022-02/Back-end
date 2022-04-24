@@ -6,9 +6,9 @@ const pool = require("../db");
 
 module.exports = class UserService {
 
-static async registerUser(username, passwd, email) {
+static async registerUser(username, password, email) {
 		try {
-			var values = [username, passwd, email];
+			var values = [username, password, email];
 			const newUser = await pool.query(
 			"INSERT INTO Usuario (Nombre, Contraseña, Puntos, Email) VALUES ($1, $2, '0', $3)", values);
 			return true;
@@ -21,7 +21,7 @@ static async registerUser(username, passwd, email) {
 
 //login
 
-	static async login(username, passwd) {
+	static async login(username, password) {
 		try {
 			const query = {
   				text: "SELECT contraseña from Usuario where nombre = ($1)",
@@ -29,7 +29,7 @@ static async registerUser(username, passwd, email) {
   				rowMode: 'array',
 			}
 			const res = await pool.query(query);
-			if (String(res.rows[0]) === passwd){
+			if (String(res.rows[0]) === password){
 				return true;
 			}
 			return false;
