@@ -12,7 +12,7 @@ app.listen(PORT, function () {
 //app.use(bodyparser.urlencoded({extended:false}))
 app.use(bodyparser.json())
 app.use(express.urlencoded({extended:false}));
-app.use(require('./routes/index.routes'))
+app.use(require('./controllers/index.routes'))
 
 
 
