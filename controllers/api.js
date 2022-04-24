@@ -33,7 +33,7 @@ api.login = async(req, res)=>{
 	try {
 		const username = req.body.username;
 		if (await userDAO.checkUser(username)){
-			const passwd = req.body.password;
+			const password = req.body.password;
 			if (await userDAO.login(username, password))
 				res.status(200).send("OK");
 			else
