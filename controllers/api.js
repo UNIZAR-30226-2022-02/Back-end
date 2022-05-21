@@ -51,15 +51,30 @@ api.login = async(req, res)=>{
 }
 
 
-
 api.deleteUser = async(req, res)=>{
-	const username = req.body.username
+	const username = req.body.username;
 	if (await userDAO.checkUser(username)){
-		userService.deleteUser(username)
-		res.send("Usuario eliminado.")
+		userService.deleteUser(username);
+		res.send("Usuario eliminado.");
 	}
 	else
-		res.send("Usuario incorrecto.")
+		res.send("Usuario incorrecto.");
+}
+
+//PARTIDAS
+
+
+api.crearPartida = async(req, res) =>{
+
+	const publica = req.body.publica;
+	const nombre = req.body.nombre;
+	const tipo = req.body.tipo;
+	const numJugadores = req.body.numJugadores;
+	idPartida = await partidaDAO.crearPartida(nombre, numJugadores, tipo, publica);
+	if (!publica)
+		res.send("Partida creada correctamente con el codigo: ", partidaDAO.getCodigoPartida(idPartida)); 	
+	else
+		res.send("Partida creada correctamente. Espera al resto de jugadores");
 }
 
 
