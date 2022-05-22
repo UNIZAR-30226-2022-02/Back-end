@@ -27,6 +27,62 @@ module.exports = class PartidaDAO {
 		}
 	}
 	
+	static async unirPartidaPublica(nombre){
+		try {
+			const query = {
+  				text: "SELECT idPartida from Partida where publica=1 and iniciada=0 LIMIT 1",  				
+  				rowMode: 'array',
+			}			
+			const idPartida = await pool.query(query);			
+			const query = {
+  				text: "INSERT INTO participa VALUES($1, $2)", 
+  				values: [nombre, idPartida], 				
+  				rowMode: 'array',
+			}
+			
+			const res = await pool.query(query);						
+			
+		} catch (err){
+			console.log(err);
+			return false;
+		}	
+	}
+	
+	static async unirPartidaPrivada(nombre, codigo){
+		try {
+			const query = {
+  				text: "SELECT idPartida from Partida where publica=0 and iniciada=0 and codigo=($1)",
+  				values: [codigo],  				
+  				rowMode: 'array',
+			}	
+					
+			const idPartida = await pool.query(query);	
+			if (idPartida.rows.length == 0)
+				return false;
+			else{
+				const query = {
+  				text: "INSERT INTO participa VALUES($1, $2)", 
+  				values: [nombre, idPartida], 				
+  				rowMode: 'array',
+				}
+			
+				const res = await pool.query(query);
+				
+				const maxJugadores = await pool.query(
+				"SELECT maxJugadores from Partida where idPartida = ($1)", [idPartida]);
+				
+				/*if(getNumJugadores >= maxJugadores){
+					//obtener lista de jugadores, crear jugada crearPartida y enviarla a los jugadores de la partida consultando el connHandler					
+				
+				}*/			
+			}								
+			
+		} catch (err){
+			console.log(err);
+			return false;
+		}	
+	}
+	
 	static async generarCodigo(nombre){		
 		codigo = nombre + (Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000).toString();
 		return codigo;	
@@ -44,13 +100,34 @@ module.exports = class PartidaDAO {
 	  				text: "SELECT count(*) from participa where idPartida = ($1) group by (nombre)",
 	  				values: [idPartida],
 	  				rowMode: 'array',
-				}			
+				}
+				
+				const res = await pool.query(query);
+				return res.rows;				
 				
 			} catch (err){
 				console.log(err);
 				return false;
 			}
 	}
+	
+	static async getListaJugadores(idPartida) {
+		try {
+			const query = {
+  				text: "SELECT nombre from participa where idPartida = ($1)",
+  				values: [idPartida],
+  				rowMode: 'array',
+			}
+			
+			const res = await pool.query(query);	
+			return res.rows[0];			
+			
+		} catch (err){
+			console.log(err);
+			return false;
+		}
+	}
+
 
 	static async insertarJugada(tipo) {
 		try {

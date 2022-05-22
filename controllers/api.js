@@ -77,5 +77,23 @@ api.crearPartida = async(req, res) =>{
 		res.send("Partida creada correctamente. Espera al resto de jugadores");
 }
 
+api.unirPartida = async(req, res) =>{
+
+	const username = req.body.username;
+	const tipoPartida = req.body.tipoPartida
+	if (tipoPartida == "privada"){	
+		const codigo = req.body.codigo;
+		if(await partidaDAO.unirPartidaPrivada(username, codigo))
+			res.send("Unido a la partida correctamente");
+		else
+			res.send("Codigo incorrecto");
+			
+	}
+	else{	
+		await partidaDAO.unirPartidaPublica(username);
+		res.send("Unido a la partida correctamente");	
+	}	
+}
+
 
 module.exports = api

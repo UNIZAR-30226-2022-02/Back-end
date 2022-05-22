@@ -1,16 +1,14 @@
-const pool = require("../db");
+//manejador de conexiones (parejas clave valor (username -> socket)
 
-
-
-//register
 
 module.exports = class ConnHandler {
 
-	var dict = {}
-		 
-
-	static async asociarSocket(socket ) {
-		dict["socket"] = socket;
+	ConnHandler(){
+		this.dict = {};
+	
+	}	
+	static async asociarSocket(socket, username) {		
+		this.dict[username] = socket;
 	}
 
 }
