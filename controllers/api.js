@@ -61,6 +61,24 @@ api.deleteUser = async(req, res)=>{
 		res.send("Usuario incorrecto.");
 }
 
+
+api.usarMapa = async(req, res) => {
+	const username = req.body.username;
+	const mapa = req.body.mapa;
+	res.send(usuarioDAO.actualizarMapa(mapa, username));
+}
+
+api.usarFichas = async(req, res) => {
+	const username = req.body.username;
+	const fichas = req.body.fichas;
+	res.send(usuarioDAO.actualizarFichas(fichas, username));
+}
+
+api.consultarItemsUsados = async(req, res) => {
+	const username = req.body.username;
+	res.send(usuarioDAO.getItemsUsados(username));
+}
+
 //PARTIDAS
 
 
@@ -121,6 +139,11 @@ api.comprarItem = async(req, res) => {
 	const username = req.body.username;
 	const item = req.body.item;
 	res.send(tiendaDAO.comprarObjeto(username, item));
+}
+
+api.getItems = async(req, res) => {
+	const username = req.body.username;
+	res.send(tiendaDAO.consultarObjetos(username));
 }
 
 

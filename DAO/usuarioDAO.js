@@ -10,7 +10,7 @@ module.exports = class UserDAO {
 		try {
 			var values = [username, password, email];
 			const newUser = await pool.query(
-			"INSERT INTO Usuario (Nombre, Contraseña, Puntos, Email) VALUES ($1, $2, '0', $3)", values);
+			"INSERT INTO Usuario (Nombre, Contraseña, Puntos, Email, mapa_idItem, fichas_idItem) VALUES ($1, $2, '0', $3, 0, 0)", values);
 			return true;
 		} catch (err){
 			console.log(err);
@@ -56,6 +56,12 @@ module.exports = class UserDAO {
 	
 	static async actualizarFichas(fichas, username){
 		const res = await pool.query("UPDATE Usuario set fichas_idItem = ($1) where nombre = ($2)", [fichas, username]);	
+	}
+	
+	static async getItemsUsados(username) {			
+		const res = await pool.query("SELECT mapa_idItem, fichas_idItem where nombre = ($1)", [username]);
+		var items = {mapa: res.rows.mapa_idItem, fichas: res.rows.fichas_idItem};
+		return items;	
 	}
 }
 

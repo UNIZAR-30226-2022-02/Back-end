@@ -203,7 +203,7 @@ module.exports = class PartidaDAO {
 			const infoPartidas = await pool.query(
 					"SELECT * fom participa where Partida_idPartida=($1) OR Partida_idPartida=($2) OR Partida_idPartida=($3) OR Partida_idPartida=($4) OR" + 
 					"Partida_idPartida=($5)", res.rows[0], res.rows[1],res.rows[2],res.rows[3],res.rows[4]); 			
-			for (int i = 0; i<res.rows.length; i++){
+			for (var i = 0; i<res.rows.length; i++){
 				partidas[i] = {nombre: infoPartidas[i].Usuario_nombre, puesto: infoPartidas[i].puesto};			
 			}
 			return partidas;			

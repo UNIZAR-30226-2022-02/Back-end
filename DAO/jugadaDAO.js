@@ -2,16 +2,15 @@ const pool = require("../db");
 
 module.exports = class JugadaDAO {	
 
-	static async insertarJugada(tipo, TerritorioAtacante,ResultadoDadosAtaque,idTerritorio,cartasUtilizadas,idTerritorioDestino,idTerritorioOrigen,numTropas,cartaRecibida,
-							ResultadoDadosDefensa,TerritorioAtacado,Partida_idPartida,Usuario_nombre) {
+	static async insertarJugada(jugada) {
 		try {
 		
-			switch(tipo){
+			switch(jugada.tipo){
 			
 				case "crearPartida": 
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre) VALUES ($1, $2, $3)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -21,7 +20,7 @@ module.exports = class JugadaDAO {
 				case "finTurno":
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre) VALUES ($1, $2, $3)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -30,7 +29,7 @@ module.exports = class JugadaDAO {
 				case "ponerTropas":
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre, idTerritorio, numTropas) VALUES ($1, $2, $3, $4, $5)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre, idTerritorio, numTropas],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre, jugada.idTerritorio, jugada.numTropas],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -39,7 +38,7 @@ module.exports = class JugadaDAO {
 				case "moverTropas":
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre, idTerritorioOrigen, idTerritorioDestino) VALUES ($1, $2, $3, $4, $5)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre, idTerritorioOrigen, idTerritorioDestino],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre, jugada.idTerritorioOrigen, jugada.idTerritorioDestino],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -48,7 +47,7 @@ module.exports = class JugadaDAO {
 				case "utilizarCartas":
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre, cartasUtilizadas) VALUES ($1, $2, $3, $4)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre, cartasUtilizadas],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre, jugada.cartasUtilizadas],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -57,7 +56,7 @@ module.exports = class JugadaDAO {
 				case "ataqueSincrono":
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre, TerritorioAtacante, TerritorioAtacado, ResultadoDadosAtaque) VALUES ($1, $2, $3, $4, $5, $6)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre, TerritorioAtacante, TerritorioAtacado, ResultadoDadosAtaque],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre, jugada.TerritorioAtacante, jugada.TerritorioAtacado, jugada.ResultadoDadosAtaque],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -65,7 +64,7 @@ module.exports = class JugadaDAO {
 				case "defensaSincrona":
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre, TerritorioAtacante, TerritorioAtacado, ResultadoDadosDefensa) VALUES ($1, $2, $3, $4, $5, $6)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre, TerritorioAtacante, TerritorioAtacado, ResultadoDadosDefensa],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre, jugada.TerritorioAtacante, jugada.TerritorioAtacado, jugada.ResultadoDadosDefensa],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -75,7 +74,8 @@ module.exports = class JugadaDAO {
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre, TerritorioAtacante, TerritorioAtacado, ResultadoDadosAtaque,ResultdoDadosDefensa)" 
 		  				+ "VALUES ($1, $2, $3, $4, $5, $6, $7)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre, TerritorioAtacante, TerritorioAtacado, ResultadoDadosAtaque,ResultdoDadosDefensa],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre, jugada.TerritorioAtacante, 
+		  						jugada.TerritorioAtacado, jugada.ResultadoDadosAtaque,jugada.ResultdoDadosDefensa],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -84,7 +84,7 @@ module.exports = class JugadaDAO {
 				case "pedirCarta":
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre, carta_recibida) VALUES ($1, $2, $3, $4)",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre, carta_recibida],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre, jugada.carta_recibida],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);
@@ -93,7 +93,7 @@ module.exports = class JugadaDAO {
 				case "finPartida":
 					const query = {
 		  				text: "INSERT INTO Jugada (tipo,Partida_idPartida, Usuario_nombre) VALUES ($1, $2, $3) ",
-		  				values: [tipo, Partida_idPartida, Usuario_nombre],
+		  				values: [jugada.tipo, jugada.Partida_idPartida, jugada.Usuario_nombre],
 		  				rowMode: 'array',
 					}
 					const res = await pool.query(query);			

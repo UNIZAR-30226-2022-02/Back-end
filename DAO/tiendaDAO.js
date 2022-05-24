@@ -7,7 +7,7 @@ module.exports = class TiendaDAO {
 	static async comprarObjeto(username, objeto) {
 		try {
 			const res = await pool.query("SELECT puntos from Usuario where nombre = ($1)", [username]);
-			const puntos = await pool.query("SELECT precio from Objeto where objeto = ($1)", [objeto]);
+			const puntos = await pool.query("SELECT precio from item where idItem = ($1)", [objeto]);
 
 			if (res.rows[0] >= puntos.rows[0]){
 				
@@ -42,10 +42,17 @@ module.exports = class TiendaDAO {
 		} catch (err){
 			console.log(err);
 			return false;
-		}
-	
+		}	
+	}
 		
-	
-	
+	static async consultarObjetos(nombre){
+		try {
+			const res = await pool.query("SELECT * from posee where Usuario_nombre=($1)", [nombre]);
+			return res.rows;
+		} catch (err){
+			console.log(err);
+			return false;
+		
+		}	
 	}
 }
