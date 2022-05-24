@@ -6,6 +6,7 @@ const server = require("http").Server(app);
 const cors = require("cors");
 const io = require('socket.io')(server);
 const conn = require('./connHandler');
+const pool = require("./db");
 
 
 const PORT = process.env.PORT || 3000;
@@ -15,7 +16,14 @@ server.listen(PORT, function () {
 });
 
 
-//console.log("server started on port " + port);
+/*async function prueba(){	
+	const res = await pool.query("SELECT count(*) as count from usuario where nombre=($1) group by(nombre) LIMIT 1", ["jesus"]);
+	console.log(res.rows[0].count);	
+	
+}
+
+prueba();*/
+	
 
 io.on('connection', function (socket) {    
     console.log("Nuevo jugador conectado"); 
@@ -25,7 +33,16 @@ io.on('connection', function (socket) {
 		conn.asociarSocket(socket, username);
 		console.log(data);   
     
-	});   
+	}); 
+	
+    socket.on('nueva_jugada', function(jugada){    
+    		partidaDAO.insertarJugada(jugada);
+    		for(var room in socket.rooms){
+    			if (room != socket.id){
+    				io.to(room).emit('nuevaJugada', jugada);    			
+    			}    		
+    		}    
+    }); 
     
     socket.on('disconnect', function () {
         console.log('client disconected');

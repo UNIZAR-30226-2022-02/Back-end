@@ -69,8 +69,9 @@ api.crearPartida = async(req, res) =>{
 	const publica = req.body.publica;
 	const nombre = req.body.nombre;
 	const tipo = req.body.tipo;
-	const numJugadores = req.body.numJugadores;
-	idPartida = await partidaDAO.crearPartida(nombre, numJugadores, tipo, publica);
+	const jugadores = req.body.jugadores;
+	const maxJugadores = req.body.maxJugadores;	
+	idPartida = await partidaDAO.crearPartida(nombre, jugadores, tipo, publica, maxJugadores);
 	if (!publica)
 		res.send("Partida creada correctamente con el codigo: ", partidaDAO.getCodigoPartida(idPartida)); 	
 	else
@@ -78,7 +79,6 @@ api.crearPartida = async(req, res) =>{
 }
 
 api.unirPartida = async(req, res) =>{
-
 	const username = req.body.username;
 	const tipoPartida = req.body.tipoPartida
 	if (tipoPartida == "privada"){	
@@ -93,6 +93,34 @@ api.unirPartida = async(req, res) =>{
 		await partidaDAO.unirPartidaPublica(username);
 		res.send("Unido a la partida correctamente");	
 	}	
+}
+
+api.consultarEnPartida = async(req, res) =>{
+	const username = req.body.username;	
+	res.send(partidaDAO.consultarEnPartida(username));
+}
+
+api.obtenerJugadas = async(req, res) => {
+	const username = req.body.username;
+	const idPartida = req.body.idPartida;
+	res.send(generarListaJugadas(username, idPartida));
+}
+
+api.obtenerHistorial = async(req,res) => {
+	const username = req.body.username;
+	res.send(partidaDAO.getHistorial(username));
+}
+
+//TIENDA
+
+api.inventarioTienda = async(req, res) => {
+	return(tiendaDAO.precios());
+}
+
+api.comprarItem = async(req, res) => {
+	const username = req.body.username;
+	const item = req.body.item;
+	res.send(tiendaDAO.comprarObjeto(username, item));
 }
 
 

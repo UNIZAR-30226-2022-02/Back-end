@@ -4,9 +4,9 @@ const pool = require("../db");
 
 //register
 
-module.exports = class UserService {
+module.exports = class UserDAO {
 
-static async registerUser(username, password, email) {
+	static async registerUser(username, password, email) {
 		try {
 			var values = [username, password, email];
 			const newUser = await pool.query(
@@ -17,7 +17,6 @@ static async registerUser(username, password, email) {
 			return false;
 		}
 	}
-
 
 //login
 
@@ -38,7 +37,6 @@ static async registerUser(username, password, email) {
 		}
 	}
 
-
 	static async checkUser(username) {
 		try{
 			const res = await pool.query("SELECT * from Usuario where nombre = ($1)", [username]);
@@ -50,6 +48,14 @@ static async registerUser(username, password, email) {
 	static async deleteUser(username){
 		const res = await pool.query("DELETE FROM Usuario where nombre = ($1)", [username]);
 		console.log(res.rows[0]);
+	}	
+	
+	static async actualizarMapa(mapa, username){
+		const res = await pool.query("UPDATE Usuario set mapa_idItem = ($1) where nombre = ($2)", [mapa, username]);	
+	}
+	
+	static async actualizarFichas(fichas, username){
+		const res = await pool.query("UPDATE Usuario set fichas_idItem = ($1) where nombre = ($2)", [fichas, username]);	
 	}
 }
 
