@@ -59,8 +59,9 @@ module.exports = class UserDAO {
 	}
 	
 	static async getItemsUsados(username) {			
-		const res = await pool.query("SELECT mapa_idItem, fichas_idItem where nombre = ($1)", [username]);
-		var items = {mapa: res.rows.mapa_idItem, fichas: res.rows.fichas_idItem};
+		const res = await pool.query("SELECT mapa_idItem, fichas_idItem from usuario where nombre = ($1)", [username]);		
+		var items = {mapa: res.rows[0].mapa_iditem, fichas: res.rows[0].fichas_iditem};
+		console.log(items.mapa, " ", items.fichas);
 		return items;	
 	}
 }

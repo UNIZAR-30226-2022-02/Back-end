@@ -1,8 +1,11 @@
-const userDAO = require("../DAO/usuarioDAO");
+const usuarioDAO = require("../DAO/usuarioDAO");
+const partidaDAO = require("../DAO/partidaDAO");
+const tiendaDAO = require("../DAO/tiendaDAO");
+const jugadaDAO = require("../DAO/jugadaDAO");
 
 
 
-const api = {}
+const api = {};
 
 
 //register
@@ -11,10 +14,10 @@ const api = {}
 api.registerUser = async(req, res)=>{
 	try {
 		const username = req.body.username;
-		if (!(await userDAO.checkUser(username))) {
+		if (!(await usuarioDAO.checkUser(username))) {
 			const password = req.body.password;			
 			const email = req.body.email;
-			if (await userDAO.registerUser(username, password, email)){
+			if (await usuarioDAO.registerUser(username, password, email)){
 				res.send("Usuario registrado.");
 			}
 		}
@@ -32,9 +35,9 @@ api.registerUser = async(req, res)=>{
 api.login = async(req, res)=>{
 	try {
 		const username = req.body.username;
-		if (await userDAO.checkUser(username)){
+		if (await usuarioDAO.checkUser(username)){
 			const password = req.body.password;
-			if (await userDAO.login(username, password))
+			if (await usuarioDAO.login(username, password))
 				res.status(200).send("OK");
 			else
 				res.status(200).send('Usuario o contraseña incorrecta');
@@ -53,7 +56,7 @@ api.login = async(req, res)=>{
 
 api.deleteUser = async(req, res)=>{
 	const username = req.body.username;
-	if (await userDAO.checkUser(username)){
+	if (await usuarioDAO.checkUser(username)){
 		userService.deleteUser(username);
 		res.send("Usuario eliminado.");
 	}
@@ -76,40 +79,57 @@ api.usarFichas = async(req, res) => {
 
 api.consultarItemsUsados = async(req, res) => {
 	const username = req.body.username;
-	res.send(usuarioDAO.getItemsUsados(username));
+	result = await usuarioDAO.getItemsUsados(username);
+	res.send(result);
+}
+
+api.getDatosUsuario = async(req, res) => {
+	const username = req.body.username;
+	console.log(username);
+	var items = await usuarioDAO.getItemsUsados(username);
+	var comprados = await tiendaDAO.consultarObjetos(username);
+	var inPartida = await partidaDAO.consultarEnPartida(username);	
+	console.log(items);
+	console.log(inPartida);
+	console.log(comprados.item_iditem);
+	if (comprados.item_iditem == undefined){
+		comprados = [1, 2];	
+	}
+	resultado = {mapaSel: items.mapa, fichaSel: items.fichas, enPartida: inPartida, objetosComprados: comprados, idPartida: inPartida};
+	res.send(resultado);
 }
 
 //PARTIDAS
 
 
 api.crearPartida = async(req, res) =>{
-
 	const publica = req.body.publica;
-	const nombre = req.body.nombre;
-	const tipo = req.body.tipo;
-	const jugadores = req.body.jugadores;
-	const maxJugadores = req.body.maxJugadores;	
-	idPartida = await partidaDAO.crearPartida(nombre, jugadores, tipo, publica, maxJugadores);
-	if (!publica)
-		res.send("Partida creada correctamente con el codigo: ", partidaDAO.getCodigoPartida(idPartida)); 	
+	const username = req.body.username;
+	var tipo = req.body.tipo;	
+	const maxJugadores = req.body.maxJugadores;
+	console.log(username);
+	console.log(publica, " ", tipo, " ", maxJugadores);	
+	var respuesta = await partidaDAO.crearPartida(username, tipo, publica, maxJugadores);	
+	if (publica == "Privada")
+		res.send(respuesta);	
 	else
-		res.send("Partida creada correctamente. Espera al resto de jugadores");
+		res.send(respuesta);
 }
 
 api.unirPartida = async(req, res) =>{
 	const username = req.body.username;
-	const tipoPartida = req.body.tipoPartida
-	if (tipoPartida == "privada"){	
+	const tipoPartida = req.body.tipoPartida		
+	if (tipoPartida == "Privada"){	
 		const codigo = req.body.codigo;
-		if(await partidaDAO.unirPartidaPrivada(username, codigo))
-			res.send("Unido a la partida correctamente");
-		else
+		respuesta = await partidaDAO.unirPartidaPrivada(username, codigo);		
+		if(respuesta === false)
 			res.send("Codigo incorrecto");
-			
+		else
+			res.send(respuesta);			
 	}
-	else{	
-		await partidaDAO.unirPartidaPublica(username);
-		res.send("Unido a la partida correctamente");	
+	else{		
+		respuesta = await partidaDAO.unirPartidaPublica(username);
+		res.send(respuesta);
 	}	
 }
 
@@ -121,7 +141,9 @@ api.consultarEnPartida = async(req, res) =>{
 api.obtenerJugadas = async(req, res) => {
 	const username = req.body.username;
 	const idPartida = req.body.idPartida;
-	res.send(generarListaJugadas(username, idPartida));
+	console.log(username, idPartida);
+	respuesta = await jugadaDAO.generarListaJugadas(username, idPartida)
+	res.send(respuesta);
 }
 
 api.obtenerHistorial = async(req,res) => {
@@ -138,7 +160,12 @@ api.inventarioTienda = async(req, res) => {
 api.comprarItem = async(req, res) => {
 	const username = req.body.username;
 	const item = req.body.item;
-	res.send(tiendaDAO.comprarObjeto(username, item));
+	if(tiendaDAO.comprarObjeto(username, item)){
+		res.send("true");	
+	}
+	else
+		res.send("false");	
+	
 }
 
 api.getItems = async(req, res) => {
@@ -147,4 +174,4 @@ api.getItems = async(req, res) => {
 }
 
 
-module.exports = api
+module.exports = api;

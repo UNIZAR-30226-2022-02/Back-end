@@ -8,24 +8,22 @@ module.exports = class TiendaDAO {
 		try {
 			const res = await pool.query("SELECT puntos from Usuario where nombre = ($1)", [username]);
 			const puntos = await pool.query("SELECT precio from item where idItem = ($1)", [objeto]);
-
-			if (res.rows[0] >= puntos.rows[0]){
-				
+			console.log(res.rows[0].puntos, puntos.rows[0].precio);
+			if (res.rows[0].puntos >= puntos.rows[0].precio){				
 				const query = {
   				text: "INSERT INTO posee VALUES($1, $2)", 
   				values: [username, objeto], 				
   				rowMode: 'array',
 				}
-				const insert = await pool.query(query);  
-				
-				total = res.rows[0] - puntos.rows[0];
-
-				const query = {
-  				text: "UPDATE Usuario SET puntos = VALUES($1) WHERE nombre = VALUES($2)", 
+				await pool.query(query);				
+				var total = res.rows[0].puntos - puntos.rows[0].precio;
+				console.log("Total: " + total);
+				const query2 = {
+  				text: "UPDATE Usuario SET puntos = ($1) WHERE nombre = ($2)", 
   				values: [total, username], 				
   				rowMode: 'array',
 				}
-				const res = await pool.query(query);
+				await pool.query(query2);
 				return true;				
 			}
 			return false;
@@ -37,8 +35,12 @@ module.exports = class TiendaDAO {
 		
 	static async precios(){
 		try {
+			var items = [];
 			const res = await pool.query("SELECT * from item");
-			return res.rows;
+			for(var i = 0; i < res.rows.length; i++){
+				items.add(res.rows[i]);			
+			}
+			items;
 		} catch (err){
 			console.log(err);
 			return false;
@@ -47,8 +49,14 @@ module.exports = class TiendaDAO {
 		
 	static async consultarObjetos(nombre){
 		try {
-			const res = await pool.query("SELECT * from posee where Usuario_nombre=($1)", [nombre]);
-			return res.rows;
+			var objetos = [];
+			const res = await pool.query("SELECT * from posee where usuario_nombre=($1)", [nombre]);
+			//console.log(res.rows[0].item_iditem);	
+			for(var i = 0; i < res.rows.length; i++){
+				objetos.add(res.rows[i].item_iditem);
+			
+			}		
+			return objetos;
 		} catch (err){
 			console.log(err);
 			return false;
